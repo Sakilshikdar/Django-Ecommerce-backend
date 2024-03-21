@@ -18,15 +18,28 @@ class ProductCatorgory(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = 'Product Categories'
+
 
 class Product(models.Model):
     category = models.ForeignKey(
         ProductCatorgory, on_delete=models.SET_NULL, null=True, related_name='category_product')
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True)
+    slug = models.CharField(max_length=200, unique=True, null=True)
     title = models.CharField(max_length=200)
     details = models.CharField(null=True)
     tags = models.TextField(null=True)
+    # price = models.FloatField()
+    price = models.DecimalField(
+        max_digits=10, decimal_places=2)
     price = models.FloatField()
+    usd_price = models.DecimalField(
+        max_digits=10, decimal_places=2, default=100)
+    demo_url = models.URLField(null=True, blank=True)
+    image = models.ImageField(upload_to='product_imgs/', null=True, blank=True)
+    product_file = models.FileField(upload_to='product_files/', null=True)
+    downloads = models.CharField(max_length=100, default=0, null=True)
 
     def tags_list(self):
         tagList = self.tags.split(',')
@@ -38,24 +51,34 @@ class Product(models.Model):
 
 class Customer (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    phome = models.PositiveBigIntegerField()
+    phone = models.PositiveBigIntegerField(unique=True, null=True)
 
     def __str__(self):
         return self.user.username
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE, related_name='customer_orders')
     order_time = models.DateTimeField(auto_now_add=True)
+    order_status = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '%s' % (self.order_time)
 
 
-class OrderItem(models.Model):
+class OrderItems(models.Model):
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='order_items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    qty = models.IntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.product.title
+
+    class Meta:
+        verbose_name_plural = 'Order Items'
 
 
 # customer address
@@ -67,6 +90,9 @@ class CustomerAddress(models.Model):
 
     def __str__(self):
         return self.address
+
+    class Meta:
+        verbose_name_plural = 'Customer Address'
 
 
 # product review and rating
@@ -92,3 +118,15 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return self.image.url
+
+
+# Whislist Model
+class Wishlist (models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name_plural = 'Wish list'
+
+    def __str__(self):
+        return f"{self.product.title} - {self.customer.user.first_name}"

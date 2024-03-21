@@ -26,14 +26,29 @@ urlpatterns = [
     # cusotmer
     path('customers/', views.CustomerList.as_view()),
     path('customer/<int:pk>/', views.CustomerDetail.as_view()),
+    path('customer/login/', views.customer_login, name='customer_login'),
+    path('customer/register/', views.customer_register, name='customer_register'),
 
     # order
     path('orders/', views.OrderList.as_view()),
     path('order/<int:pk>/', views.OrderDetail.as_view()),
+    path('orderitems/', views.OrderItemList.as_view()),
+    path('customer/<int:pk>/orderitems/',
+         views.CustomerOrderItemList.as_view()),
+    path('updateStatus/<int:order_id>/',
+         views.updateStatus, name='update_orders_status'),
+    path('update_product_download_count/<int:product_id>/',
+         views.update_product_download_count, name='update_product_download_count'),
 
+    # Wishlist
+    path('wishlist/', views.Wishlistitem.as_view()),
+    path('check_in_wishlist/',
+         views.check_in_wishlist_items, name='check_in_wishlist'),
+    path('remove_from_wishlist/',
+         views.remove_from_wishlist_items, name='remove_from_wishlist'),
 
-    # customer address
-    # path('customer-address/', views.CustomerAddress.as_view()),
+    path('customer/<int:pk>/wishitems/',
+         views.CustomerWishItemList.as_view()),
 ]
 
 urlpatterns += router.urls
