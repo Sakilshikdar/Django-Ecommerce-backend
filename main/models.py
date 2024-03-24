@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 
 class Vendor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    phone = models.PositiveBigIntegerField(unique=True, null=True)
+    profile_img = models.ImageField(upload_to='seller_imgs/', null=True)
     address = models.CharField(null=True, max_length=100)
 
     def __str__(self):
@@ -33,17 +35,19 @@ class Product(models.Model):
     # price = models.FloatField()
     price = models.DecimalField(
         max_digits=10, decimal_places=2)
-    price = models.FloatField()
     usd_price = models.DecimalField(
         max_digits=10, decimal_places=2, default=100)
     demo_url = models.URLField(null=True, blank=True)
-    image = models.ImageField(upload_to='product_imgs/', null=True, blank=True)
+    image = models.ImageField(
+        upload_to='product_imgs/', null=True, blank=True)
     product_file = models.FileField(upload_to='product_files/', null=True)
     downloads = models.CharField(max_length=100, default=0, null=True)
+    publish_status = models.BooleanField(default=False)
 
     def tags_list(self):
-        tagList = self.tags.split(',')
-        return tagList
+        if self.tags:
+            tagList = self.tags.split(',')
+            return tagList
 
     def __str__(self):
         return self.title
@@ -52,6 +56,7 @@ class Product(models.Model):
 class Customer (models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     phone = models.PositiveBigIntegerField(unique=True, null=True)
+    profile_img = models.ImageField(upload_to='customer_imgs/', null=True)
 
     def __str__(self):
         return self.user.username
@@ -62,6 +67,8 @@ class Order(models.Model):
         Customer, on_delete=models.CASCADE, related_name='customer_orders')
     order_time = models.DateTimeField(auto_now_add=True)
     order_status = models.BooleanField(default=False)
+    total_use_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return '%s' % (self.order_time)

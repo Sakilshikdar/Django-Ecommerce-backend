@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import Vendor, ProductCatorgory, Product, Customer, Order, OrderItems, CustomerAddress, ProductRating, ProductImage, Wishlist
+from django.contrib.auth.models import User
+
+print(User.objects.all())
 
 
 class VendorSerializer(serializers.ModelSerializer):
@@ -38,7 +41,7 @@ class ProductrListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'category', 'vendor', 'title',
+        fields = ['id', 'category', 'vendor', 'image', 'title', 'tags', 'publish_status', 'slug',
                   'product_ratings', 'tags_list', 'usd_price', 'product_imgs', 'details', 'price', 'product_file']
 
         def __init__(self, *args, **kwargs):
@@ -52,7 +55,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'category', 'vendor', 'title',
+        fields = ['id', 'category', 'vendor', 'title', 'image', 'publish_status', 'tags', 'slug',
                   'product_ratings', 'product_imgs', 'tags_list', 'details', 'usd_price', 'price', 'demo_url', 'product_file', 'downloads']
 
         def __init__(self, *args, **kwargs):
@@ -69,13 +72,22 @@ class CustomerSerializer(serializers.ModelSerializer):
             super(CustomerSerializer, self).__init__(*args, **kwargs)
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'username', 'email']
+
+
 class CustomerDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ['id', 'user', 'phone']
+        fields = ['id', 'user', 'phone', 'profile_img', 'customer_orders']
 
-        def __init__(self, *args, **kwargs):
-            super(CustomerDetailSerializer, self).__init__(*args, **kwargs)
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['user'] = UserSerializer(instance.user).data
+
+        return response
 
 
 class OrderSerializer(serializers.ModelSerializer):
