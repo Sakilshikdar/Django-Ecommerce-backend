@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import Count
+import datetime
 # Create your models here.
 
 
@@ -11,6 +13,57 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    @property
+    def show_chat_daily_orders(self):
+        orders = OrderItems.objects.filter(product__vendor=self).values(
+            'order__order_time__date').annotate(count=Count('id'))
+        dateList = []
+        countList = []
+        dataSet = {}
+        if orders:
+            for order in orders:
+                dateList.append(order['order__order_time__date'])
+                countList.append(order['count'])
+        dataSet = {'dates': dateList, 'data': countList}
+        return dataSet
+
+    @property
+    def show_chat_monthly_orders(self):
+        orders = OrderItems.objects.filter(product__vendor=self).values(
+            'order__order_time__month').annotate(count=Count('id'))
+        dateList = []
+        countList = []
+        dataSet = {}
+        if orders:
+            for order in orders:
+                monthinteger = order['order__order_time__month']
+                month = datetime.date(1900, monthinteger, 1).strftime('%B')
+                dateList.append(month)
+                countList.append(order['count'])
+        dataSet = {'dates': dateList, 'data': countList}
+        return dataSet
+
+    @property
+    def show_chat_yearly_orders(self):
+        orders = OrderItems.objects.filter(product__vendor=self).values(
+            'order__order_time__year').annotate(count=Count('id'))
+        dateList = []
+        countList = []
+        dataSet = {}
+        if orders:
+            for order in orders:
+                dateList.append(order['order__order_time__year'])
+                countList.append(order['count'])
+        dataSet = {'dates': dateList, 'data': countList}
+        return dataSet
+
+        # fetch total product
+    @property
+    def total_products(self):
+        return Product.objects.filter(vendor=self).count()
+        # dataSet = {'dates': dateList, 'data': countList}
+        # return dataSet
 
 
 class ProductCatorgory(models.Model):
@@ -67,7 +120,9 @@ class Order(models.Model):
         Customer, on_delete=models.CASCADE, related_name='customer_orders')
     order_time = models.DateTimeField(auto_now_add=True)
     order_status = models.BooleanField(default=False)
-    total_use_amount = models.DecimalField(
+    total_amout = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0)
+    total_usd_amount = models.DecimalField(
         max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
@@ -80,6 +135,7 @@ class OrderItems(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     qty = models.IntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    usd_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.product.title

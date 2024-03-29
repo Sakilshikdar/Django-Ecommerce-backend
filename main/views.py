@@ -7,7 +7,12 @@ from django.http import JsonResponse
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.db.models import Count
+from django.contrib.auth.hashers import make_password
 # Create your views here.
+
+# http://localhost:3000/seller/SellerChangePassword
+# name jhondeo
 
 
 @csrf_exempt
@@ -51,6 +56,34 @@ def customer_register(request):
 
 
 @csrf_exempt
+def VendorChangePassword(request, vendor_id):
+    password = request.POST.get('password')
+    vendor = Vendor.objects.get(id=vendor_id)
+    user = vendor.user
+    user.password = make_password(password)
+    user.save()
+    msg = {
+        'bool': True,
+        'msg': 'Password changed successfully'
+    }
+    return JsonResponse(msg)
+
+
+@csrf_exempt
+def CustomerChangePassword(request, customer_id):
+    password = request.POST.get('password')
+    customer = Customer.objects.get(id=customer_id)
+    user = customer.user
+    user.password = make_password(password)
+    user.save()
+    msg = {
+        'bool': True,
+        'msg': 'Password changed successfully'
+    }
+    return JsonResponse(msg)
+
+
+@csrf_exempt
 def customer_login(request):
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -79,6 +112,18 @@ class VendorList(generics.ListCreateAPIView):
 class VendorDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Vendor.objects.all()
     serializer_class = serializers.VendorDetailSerializer
+
+
+# seller product List
+class VendorProductList(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = serializers.ProductrListSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        vendor_id = self.kwargs['vendor_id']
+        qs = qs.filter(vendor__id=vendor_id).order_by('id')
+        return qs
 
 
 @csrf_exempt
@@ -178,6 +223,11 @@ class ProducImgstDetail(generics.ListCreateAPIView):
         return qs
 
 
+class ProducImgtDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ProductImage.objects.all()
+    serializer_class = serializers.ProductImageSerializer
+
+
 class TagProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = serializers.ProductrListSerializer
@@ -221,16 +271,15 @@ class CustomerList(generics.ListCreateAPIView):
 
 class CustomerDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Customer.objects.all()
-    serializer_class = serializers.UserSerializer
+    serializer_class = serializers.CustomerDetailSerializer
 
 
 class UserDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
-    serializer_class = serializers.CustomerDetailSerializer
+    serializer_class = serializers.UserSerializer
+
 
 # order
-
-
 class OrderList(generics.ListCreateAPIView):
     queryset = Order.objects.all()
     serializer_class = serializers.OrderSerializer
@@ -258,6 +307,45 @@ class CustomerOrderItemList(generics.ListCreateAPIView):
         return qs
 
 
+class VendorCustomerOrderItemList(generics.ListCreateAPIView):
+    queryset = OrderItems.objects.all()
+    serializer_class = serializers.OrderItemSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        vendor_id = self.kwargs['vendor_id']
+        customer_id = self.kwargs['customer_id']
+        qs = qs.filter(order__customer__id=customer_id,
+                       product__vendor__id=vendor_id)
+        return qs
+
+
+class VendorOrderItemList(generics.ListCreateAPIView):
+    queryset = OrderItems.objects.all()
+    serializer_class = serializers.OrderItemSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        vendor_id = self.kwargs['pk']
+        qs = qs.filter(product__vendor__id=vendor_id)
+
+        return qs
+
+# vendero customer list
+
+
+class VendorcustomerItemList(generics.ListAPIView):
+    queryset = OrderItems.objects.all()
+    serializer_class = serializers.OrderItemSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        vendor_id = self.kwargs['pk']
+        qs = qs.filter(product__vendor__id=vendor_id)
+
+        return qs
+
+
 class OrderDetail(generics.RetrieveUpdateDestroyAPIView):
 
     serializer_class = serializers.OrderDetailSerializer
@@ -265,7 +353,7 @@ class OrderDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         order_id = self.kwargs['pk']
         order = Order.objects.get(pk=order_id)
-        order_items = OrderItem.objects.filter(order=order)
+        order_items = OrderItems.objects.filter(order=order)
         return order_items
 
 
@@ -292,6 +380,13 @@ class CatagoryList(generics.ListCreateAPIView):
 class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = ProductCatorgory.objects.all()
     serializer_class = serializers.CategoryeDtailSerializer
+
+# order modify
+
+
+class OrderModify(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Order.objects.all()
+    serializer_class = serializers.OrderSerializer
 
 
 @csrf_exempt
@@ -423,3 +518,50 @@ def customer_dashboard(request, pk):
         'totalWishList': totalWishList,
     }
     return JsonResponse(msg)
+
+
+def Vendor_dashboard(request, pk):
+    Vendor_id = pk
+    totalProduct = Product.objects.filter(
+        vendor__id=Vendor_id).count()
+    totalOrders = OrderItems.objects.filter(
+        product__vendor__id=Vendor_id).count()
+    totalCustomers = OrderItems.objects.filter(
+        product__vendor__id=Vendor_id).values('order__customer').count()
+    msg = {
+        'totalProducts': totalProduct,
+        'totalOrders': totalOrders,
+        'totalCustomers': totalCustomers,
+    }
+    return JsonResponse(msg)
+
+
+@csrf_exempt
+def update_cutomer_order(request, customer_id):
+
+    if request.method == 'DELETE':
+        orders = Order.objects.filter(customer__id=customer_id).delete()
+
+        msg = {
+            'bool': False,
+        }
+
+        if orders:
+            msg = {
+                'bool': True
+            }
+    return JsonResponse(msg)
+
+    # vendor Daily report
+
+
+# class VendorDailyReport(generics.ListAPIView):
+#     queryset = OrderItems.objects.all()
+#     serializer_class = serializers.OrderItemSerializer
+
+#     def get_queryset(self):
+#         qs = super().get_queryset()
+#         customer_id = self.kwargs['pk']
+#         qs = qs.filter(order__customer__id=customer_id).values(
+#             'order__order_time__date').annotate(Count('id'))
+#         return qs
