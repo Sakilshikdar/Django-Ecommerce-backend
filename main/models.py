@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, Sum
 import datetime
 # Create your models here.
 
@@ -13,6 +13,12 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    @property
+    def categories(self):
+        cats = Product.objects.filter(vendor=self, category__isnull=False).values(
+            'category__title', 'category__id').distinct('category__title')
+        return cats
 
     @property
     def show_chat_daily_orders(self):
@@ -72,6 +78,17 @@ class ProductCatorgory(models.Model):
 
     def __str__(self):
         return self.title
+
+    @property
+    def total_downloads(self):
+        totalDownloads = 0
+
+        products = Product.objects.filter(
+            category=self)
+        for product in products:
+            if product.downloads:
+                totalDownloads += int(product.downloads)
+        return totalDownloads
 
     class Meta:
         verbose_name_plural = 'Product Categories'

@@ -17,7 +17,8 @@ class VendorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Vendor
-        fields = ['id', 'user', 'address', 'profile_img', 'phone']
+        fields = ['id', 'user', 'address',
+                  'profile_img', 'phone', 'categories']
 
         def __init__(self, *args, **kwargs):
             super(VendorSerializer, self).__init__(*args, **kwargs)
@@ -33,7 +34,7 @@ class VendorDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vendor
         fields = ['id', 'user', 'profile_img', 'phone', 'address', 'show_chat_daily_orders',
-                  'show_chat_monthly_orders', 'show_chat_yearly_orders', 'total_products']
+                  'show_chat_monthly_orders', 'show_chat_yearly_orders', 'total_products', 'categories']
 
         def __init__(self, *args, **kwargs):
             super(VendorDetailSerializer, self).__init__(*args, **kwargs)
@@ -184,7 +185,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCatorgory
-        fields = ['id', 'title', 'detail']
+        fields = ['id', 'title', 'detail', 'total_downloads']
 
         def __init__(self, *args, **kwargs):
             super(CategorySerializer, self).__init__(*args, **kwargs)
