@@ -75,6 +75,7 @@ class Vendor(models.Model):
 class ProductCatorgory(models.Model):
     title = models.CharField(max_length=200)
     detail = models.CharField(null=True)
+    cat_img = models.ImageField(upload_to='category_imgs/', null=True)
 
     def __str__(self):
         return self.title

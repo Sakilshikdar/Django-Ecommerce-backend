@@ -37,7 +37,7 @@ def customer_register(request):
                     'customer': customer.id,
                     'msg': 'You have successfully registered.You can now login.'
                 }
-            except IntegrityError:
+            except:
                 msg = {
                     'bool': False,
                     'msg': 'mobile already exists'
@@ -299,15 +299,15 @@ class OrderList(generics.ListCreateAPIView):
     serializer_class = serializers.OrderSerializer
 
 
-class OrderItemList(generics.ListAPIView):
+class OrderItemList(generics.ListCreateAPIView):
     queryset = OrderItems.objects.all()
     serializer_class = serializers.OrderItemSerializer
 
-    def get_queryset(self):
-        qs = super().get_queryset()
-        customer_id = self.kwargs['pk']
-        qs = qs.filter(order__customer__id=customer_id)
-        return qs
+    # def get_queryset(self):
+    #     qs = super().get_queryset()
+    #     customer_id = self.kwargs['pk']
+    #     qs = qs.filter(order__customer__id=customer_id)
+    #     return qs
 
 
 class CustomerOrderItemList(generics.ListCreateAPIView):
@@ -407,7 +407,7 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
 # order modify
 
 
-class OrderModify(generics.RetrieveUpdateDestroyAPIView):
+class OrderModify(generics.UpdateAPIView):
     queryset = Order.objects.all()
     serializer_class = serializers.OrderSerializer
 
@@ -420,7 +420,7 @@ def updateStatus(request, order_id):
     if request.method == "POST":
         updateRes = Order.objects.filter(
             id=order_id).update(order_status=True)
-        # print(updateRes)
+        print(updateRes)
         if updateRes:
             msg = {
                 'bool': True,
@@ -503,6 +503,12 @@ class CustomerAddressItemList(generics.ListCreateAPIView):
     queryset = CustomerAddress.objects.all()
     serializer_class = serializers.CustomerAddressSerializer
 
+    # def get_queryset(self):
+    #     qs = super().get_queryset()
+    #     customer_id = self.kwargs['pk']
+    #     qs = qs.filter(customer__id=customer_id)
+    #     return qs
+
     def get_queryset(self):
         qs = super().get_queryset()
         customer_id = self.kwargs['pk']
@@ -533,8 +539,8 @@ def customer_dashboard(request, pk):
         customer__id=customer_id).count()
     totalAddress = CustomerAddress.objects.filter(
         customer__id=customer_id).count()
-    totalOrders = Order.objects.filter(
-        customer__id=customer_id).count()
+    totalOrders = OrderItems.objects.filter(
+        order__customer__id=customer_id).count()
     msg = {
         'totalOrders': totalOrders,
         'totalAddress': totalAddress,

@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name',  'email']
+        fields = ['id', 'username', 'first_name',
+                  'last_name',  'email']
 
 
 class VendorSerializer(serializers.ModelSerializer):
@@ -83,7 +84,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
 class CustomerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Customer
-        fields = ['id', 'user', 'phone']
+        fields = ['id', 'user', 'phone', 'profile_img']
 
         def __init__(self, *args, **kwargs):
             super(CustomerSerializer, self).__init__(*args, **kwargs)
@@ -126,7 +127,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItems
-        fields = ['id', 'product', 'qty', 'price', 'order', 'usd_price']
+        fields = ['id', 'product', 'qty', 'price', 'order', 'usd_price',]
         # fields = '__all__'
 
     def __init__(self, *args, **kwargs):
@@ -185,7 +186,7 @@ class ProductRatingSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductCatorgory
-        fields = ['id', 'title', 'detail', 'total_downloads']
+        fields = ['id', 'title', 'detail', 'total_downloads', 'cat_img']
 
         def __init__(self, *args, **kwargs):
             super(CategorySerializer, self).__init__(*args, **kwargs)
