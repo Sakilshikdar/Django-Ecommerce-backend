@@ -81,3 +81,5 @@ tzdata
 urllib3
 virtualenv
 whitenoise
+
+# pg adming pass 12345
