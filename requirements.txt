@@ -11,6 +11,7 @@ dj-database-url
 Django
 django-allauth
 django-ckeditor
+django-cleanup
 django-cors-headers
 django-countries
 django-crispy-forms
