@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-+xnc-wq72sg5qs=2!ibyy@vwlpu+u8n788ovl*4$h9b&^v4065
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['<tr>No</tr>http://127.0.0.1:8000','https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['< https://django-ecommerce-backend.onrender.com','https://*.127.0.0.1']
 
 
 # Application definition
