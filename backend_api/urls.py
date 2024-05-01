@@ -16,7 +16,7 @@ Including another URLconf
 
     http post :8000/api/token/ username=sakil password=123
 
-    http http://127.0.0.1:8000/api/vendors/ "Authorization: Bearer "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA2NDY5MzI2LCJpYXQiOjE3MDY0NjkwMjYsImp0aSI6IjM2NGE2ZjNjNTc1ZDRlZWRiMjg3ZDYxMjFkYzMwZDcxIiwidXNlcl9pZCI6MX0.5TeHbv1PlwQFdJz4lgg_6aIwq0RqdZkuIkWmsNPt75E"
+    http https://django-ecommerce-backend.onrender.com/api/vendors/ "Authorization: Bearer "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA2NDY5MzI2LCJpYXQiOjE3MDY0NjkwMjYsImp0aSI6IjM2NGE2ZjNjNTc1ZDRlZWRiMjg3ZDYxMjFkYzMwZDcxIiwidXNlcl9pZCI6MX0.5TeHbv1PlwQFdJz4lgg_6aIwq0RqdZkuIkWmsNPt75E"
 """
 from django.contrib import admin
 from django.urls import path, include

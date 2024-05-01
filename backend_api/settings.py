@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-+xnc-wq72sg5qs=2!ibyy@vwlpu+u8n788ovl*4$h9b&^v4065
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['https://django-ecommerce-backend.onrender.com','https://*.127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['<tr>No</tr>http://127.0.0.1:8000','https://*.127.0.0.1']
 
 
 # Application definition
@@ -88,23 +88,23 @@ WSGI_APPLICATION = 'backend_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': env('DB_NAME'),
-#         'USER': env('DB_USER'),
-#         'PASSWORD': env('DB_PASSWORD'),
-#         'HOST': env('DB_HOST'),
-#         'PORT': env('DB_PORT'),
-#     }
-# }
-
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://ecommarce_backend_user:ziAilN8eb8UfPfNbw9L5RyomG5EaRkst@dpg-conhssa1hbls73fj2beg-a.oregon-postgres.render.com/ecommarce_backend',
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
+    }
 }
+
+
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         default='postgres://ecommarce_backend_user:ziAilN8eb8UfPfNbw9L5RyomG5EaRkst@dpg-conhssa1hbls73fj2beg-a.oregon-postgres.render.com/ecommarce_backend',
+#     )
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -156,7 +156,7 @@ REST_FRAMEWORK = {
     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
     # )
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 4
 }
 
 MEDIA_URL = '/media/'
