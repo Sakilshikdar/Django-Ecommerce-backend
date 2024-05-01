@@ -88,23 +88,23 @@ WSGI_APPLICATION = 'backend_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env('DB_PORT'),
-    }
-}
-
-
 # DATABASES = {
-#     'default': dj_database_url.config(
-#         default='postgres://ecommarce_backend_user:ziAilN8eb8UfPfNbw9L5RyomG5EaRkst@dpg-conhssa1hbls73fj2beg-a.oregon-postgres.render.com/ecommarce_backend',
-#     )
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env('DB_NAME'),
+#         'USER': env('DB_USER'),
+#         'PASSWORD': env('DB_PASSWORD'),
+#         'HOST': env('DB_HOST'),
+#         'PORT': env('DB_PORT'),
+#     }
 # }
+
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgres://ecommarce_backend_user:ziAilN8eb8UfPfNbw9L5RyomG5EaRkst@dpg-conhssa1hbls73fj2beg-a.oregon-postgres.render.com/ecommarce_backend',
+    )
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
