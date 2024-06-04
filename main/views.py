@@ -420,7 +420,6 @@ def updateStatus(request, order_id):
     if request.method == "POST":
         updateRes = Order.objects.filter(
             id=order_id).update(order_status=True)
-        print(updateRes)
         if updateRes:
             msg = {
                 'bool': True,
