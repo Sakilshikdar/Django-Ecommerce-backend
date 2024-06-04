@@ -73,8 +73,8 @@ class Vendor(models.Model):
 
 
 class ProductCatorgory(models.Model):
-    title = models.CharField(max_length=200)
-    detail = models.CharField(null=True)
+    title = models.CharField(max_length=100)
+    detail = models.CharField(max_length=200, null=True,default='')
     cat_img = models.ImageField(upload_to='category_imgs/', null=True)
 
     def __str__(self):
@@ -101,7 +101,7 @@ class Product(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True)
     slug = models.CharField(max_length=200, unique=True, null=True)
     title = models.CharField(max_length=200)
-    details = models.CharField(null=True)
+    details = models.CharField(max_length=200, null=True)
     tags = models.TextField(null=True)
     # price = models.FloatField()
     price = models.DecimalField(

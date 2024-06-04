@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,6 +31,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -43,7 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     "corsheaders",
-    'django_cleanup.apps.CleanupConfig',
+    'django_cleanup.apps.CleanupConfig',    
 ]
 
 
@@ -83,17 +87,27 @@ WSGI_APPLICATION = 'backend_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+# DATABASES = {
+#     'default': {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'multivendor-ecommerce',
-        'USER': 'postgres',
-        'PASSWORD': '12345',
-        'HOST': 'localhost',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': 'multivendor-ecommerce',
+        # 'USER': 'postgres',
+        # 'PASSWORD': '12345',
+        # 'HOST': 'localhost',
+#     }
+# }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES ['default'] = dj_database_url.parse({'postgres://book_manager_user:kjvugHbbkfr9jau0L47eY8VOUJwtUX8w@dpg-cp6vmaev3ddc73frduo0-a.oregon-postgres.render.com/book_manager'})
 
 
 # Password validation
