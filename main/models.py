@@ -17,7 +17,7 @@ class Vendor(models.Model):
     @property
     def categories(self):
         cats = Product.objects.filter(vendor=self, category__isnull=False).values(
-            'category__title', 'category__id').distinct('category__title')
+            'category__title', 'category__id')
         return cats
 
     @property
